@@ -68,3 +68,19 @@ int Bind(int sockfd, struct sockaddr *my_addr, int addrlen)
 	return status;
 }
 
+/*
+ * Set socket options
+ * The SetSocketOptions() function provides an application program with the means to control socket behavior.
+ * An application program can use SetSocketOptions() to allocate buffer space, control timeouts, or permit
+ * socket data broadcasts. To see more details, please check linux man page
+ * */
+int SetSocketOptions(int socket, int level, int option_name, const void *option_value, socklen_t option_len)
+{
+	int status;
+	if((status = setsockopt(socket, level, option_name, option_value, option_len)) == -1)
+	{
+		fprintf(stderr, "socket option error");
+		exit(EXIT_FAILURE);
+	}
+	return status;
+}

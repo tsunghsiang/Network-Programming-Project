@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <arpa/inet.h>
 #include <errno.h>
+#include <netinet/in.h>
 
 /*
  * DNS lookup / service name lookup :
@@ -44,5 +45,13 @@ int Socket(int domain, int type, int protocol);
  * addrlen: size of my_addr
  * */
 int Bind(int sockfd, struct sockaddr *my_addr, int addrlen);
+
+/*
+ * Set socket options
+ * The SetSocketOptions() function provides an application program with the means to control socket behavior. 
+ * An application program can use SetSocketOptions() to allocate buffer space, control timeouts, or permit 
+ * socket data broadcasts. To see more details, please check linux man page
+ * */
+int SetSocketOptions(int socket, int level, int option_name, const void *option_value, socklen_t option_len);
 
 #endif
