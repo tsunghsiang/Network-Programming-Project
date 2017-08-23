@@ -84,3 +84,59 @@ int SetSocketOptions(int socket, int level, int option_name, const void *option_
 	}
 	return status;
 }
+
+/*
+ * Make a connection on a socket to the address specified by parameter 'address'
+ * socket: local socket file descriptor
+ * address: structure containing the peer address. The length and format of the
+ *          address depend on the address family of the socket
+ * address_len: length of address
+ * */
+int Connect(int socket, const struct sockaddr *address, socklen_t address_len)
+{
+	int status;
+	if((status = connect(socket, address, address_len)) == -1)
+	{
+		fprintf(stderr, "connection error");
+	  	exit(EXIT_FAILURE); 
+	}
+	return status;
+}
+
+/*
+ * Listen for connections on a socket - socket that will be used to accept connection requests
+ * sockfd: socket file descriptor of host waiting to be connected
+ * backlog: the maximum connection pending in the queue
+ * Note: the socket refers to type SOCK_STREAM or SOCK_SEQPACKET (connection-based).
+ * */
+int Listen(int sockfd, int backlog)
+{
+	int status;
+	if((status = listen(sockfd, backlog)) == -1)
+	{
+		fprintf(stderr, "listening error");
+		exit(EXIT_FAILURE); 
+	}
+	return status;
+}
+
+/*
+ * Accept a connection on a socket - It extracts the first connection request on the queue of
+ * pending connections for the listening socket
+ * sockfd: socket number return from socket() used by host for incoming connections
+ * addr: the address structure to be filled in with peer address whose type is determined by
+ *       address family (AF_INET or AF_INET6)
+ * addrlen: size of addr
+ * Note: the socket refers to type SOCK_STREAM or SOCK_SEQPACKET (connection-based).
+ * */
+int Accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen)
+{
+	int fd;
+	if((fd = accept(sockfd, addr, addrlen)) == -1)
+	{
+		fprintf(stderr, "accept error");
+		exit(EXIT_FAILURE);
+	}
+	return fd;
+}
+

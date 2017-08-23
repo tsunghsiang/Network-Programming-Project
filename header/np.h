@@ -54,4 +54,31 @@ int Bind(int sockfd, struct sockaddr *my_addr, int addrlen);
  * */
 int SetSocketOptions(int socket, int level, int option_name, const void *option_value, socklen_t option_len);
 
+/*
+ * Make a connection on a socket to the address specified by parameter 'address'
+ * socket: local socket file descriptor
+ * address: structure containing the peer address. The length and format of the 
+ *          address depend on the address family of the socket
+ * address_len: length of address
+ */
+int Connect(int socket, const struct sockaddr *address, socklen_t address_len);
+
+/*
+ * Listen for connections on a socket - socket that will be used to accept connection requests 
+ * sockfd: socket file descriptor of host waiting to be connected
+ * backlog: the maximum connection pending in the queue
+ * Note: the socket refers to type SOCK_STREAM or SOCK_SEQPACKET (connection-based).
+ */ 
+int Listen(int sockfd, int backlog);
+
+/*
+ * Accept a connection on a socket - It extracts the first connection request on the queue of 
+ * pending connections for the listening socket
+ * sockfd: socket number return from socket() used by host for incoming connections
+ * addr: the address structure to be filled in with peer address whose type is determined by
+ *       address family (AF_INET or AF_INET6)
+ * addrlen: size of addr
+ * */
+int Accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
+
 #endif
