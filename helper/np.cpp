@@ -140,3 +140,170 @@ int Accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen)
 	return fd;
 }
 
+/*
+ *  * Send a message on a socket - initiate transmission of a message from the specified socket to its peer
+ *   * socket: socket file descriptor
+ *    * buffer: a pointer to the message to be sent
+ *     * length: length of the message to be sent
+ *      * flags: specifies the type of message transmission
+ *       * For more details, please refer to linux man page
+ *        * */
+ssize_t Send(int socket, const void *buffer, size_t length, int flags)
+{
+	ssize_t sz;
+	if((sz = send(socket, buffer, length, flags)) < 0)
+	{
+		fprintf(stderr, "send() error");
+		exit(EXIT_FAILURE);
+	}
+	return sz;
+}
+
+/*
+ * Receive a message from a connected socket - receive a message from a connection-mode or connectionless-mode socket.
+ * socket: socket file descriptor
+ * buffer: a pointer to a buffer where message is filled
+ * length: length of message to be filled in the buffer
+ * flags: specifies the type of message reception
+ * */
+ssize_t Recv(int socket, void *buffer, size_t length, int flags)
+{
+	ssize_t sz;
+	
+	sz = recv(socket, buffer, length, flags);
+	if(sz == 0)
+	{
+		fprintf(stderr, "remote host shutdown");
+	}
+	else if(sz < 0)
+	{
+		fprintf(stderr, "recv() error");
+		exit(EXIT_FAILURE);
+	}
+
+	return sz;
+}
+
+/*
+ * Send a message on a socket - If sendto() is used on a connection-mode (SOCK_STREAM, SOCK_SEQPACKET) socket, the
+ * arguments dest_addr and addrlen are ignored. Otherwise dest_addr should be filled in once message is transmitted
+ * on connectionless-mode (DGRAM_STREAM) socket
+ * sockfd: socket file descriptor
+ * buf: a pointer to a buffer where message is filled
+ * len: length of message to be filled in the buffer
+ * flags: specifies the type of message transmission
+ * dest_addr: destination address information
+ * addrlen: length of destination address information
+ * */
+ssize_t SendTo(int sockfd, const void *buf, size_t len, int flags, const struct sockaddr *dest_addr, socklen_t addrlen)
+{
+	ssize_t sz;
+	if((sz = sendto(sockfd, buf, len, flags, dest_addr, addrlen)) < 0)
+	{
+		fprintf(stderr, "sendto() error");
+		exit(EXIT_FAILURE);
+	}
+	return sz;
+}
+
+/*
+ * Receive a message from a socket - receive a message from a connection-mode or connectionless-mode socket.
+ * It is normally used with connectionless-mode sockets because it permits the application to retrieve the
+ * source address of received data.
+ * sockfd: socket file descriptor
+ * buf: a pointer to a buffer where message is filled
+ * len: length of message to be filled in the buffer
+ * flags: specifies the type of message transmission
+ * from: the address information the message is received from
+ * fromlen: size of source address
+ * */
+ssize_t RecvFrom(int sockfd, void *buf, int len, unsigned int flags, struct sockaddr *from, int *fromlen)
+{
+        ssize_t sz;
+
+        sz = recvfrom(sockfd, buf, len, flags, from, fromlen);
+        if(sz == 0)
+        {
+	        fprintf(stderr, "remote host shutdown");
+	}
+	else if(sz < 0)
+	{
+		fprintf(stderr, "recvfrom() error");		
+		exit(EXIT_FAILURE);
+	}
+
+   	return sz;
+}
+
+/*
+ * Close a file descriptor - deallocate the file descriptor indicated by fd
+ * fd: file descriptor
+ * */
+int Close(int fd)
+{
+	int status;
+	if((status = close(fd)) == -1)
+	{
+		fprintf(stderr, "close() error");
+		exit(EXIT_FAILURE);
+	}
+	return status;
+}
+
+/*
+ * Shut down socket send and receive operations - it does not actually close the file decriptor and just change
+ * its usability
+ * socket: socket file descriptor whose behavior is going to be changed
+ * how: specifies the type of shutdown. The values are as follows:
+ *      SHUT_RD     Disables further receive operations.
+ *      SHUT_WR     Disables further send operations.
+ *      SHUT_RDWR   Disables further send and receive operations.
+ * For more details, please refer to linux man page
+ * */
+int ShutDown(int socket, int how)
+{
+	int status;
+        if((status = shutdown(socket, how)) == -1)
+	{
+		fprintf(stderr, "shutdown() error");
+	        exit(EXIT_FAILURE);
+	}
+        return status;
+
+}
+
+/*
+ * Tell you who is at the other end of a connected stream socket - retreive the peer address of the specified socket;
+ * store the address in the structure pointed to by peer_addr; store the length of this address in the object pointed
+ * to by the addrlen argument.
+ * sockfd: socket file descriptor
+ * peer_addr: peer address information
+ * addrlen: size of peer address
+ * */
+int GetPeerName(int sockfd, struct sockaddr *peer_addr, int *addrlen)
+{
+        int status;
+        if((status = getpeername(sockfd, peer_addr, addrlen)) == -1)
+        {
+	        fprintf(stderr, "getpeername() error");
+	        exit(EXIT_FAILURE);
+	}
+	return status;
+}
+
+/*
+ * Get the name of the computer where your program is running
+ * hostname: a pointer to the buffer where host name is filled
+ * size: size of hostname
+ * */
+int GetHostName(char *hostname, size_t size)
+{
+	int status;
+        if((status = gethostname(hostname, size)) == -1)
+	{
+		fprintf(stderr, "gethostname() error");
+		exit(EXIT_FAILURE);
+	}
+        return status;
+}
+

@@ -12,6 +12,7 @@
 #include <arpa/inet.h>
 #include <errno.h>
 #include <netinet/in.h>
+#include <unistd.h>
 
 /*
  * DNS lookup / service name lookup :
@@ -80,5 +81,85 @@ int Listen(int sockfd, int backlog);
  * addrlen: size of addr
  * */
 int Accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
+
+/*
+ * Send a message on a socket - initiate transmission of a message from the specified socket to its peer
+ * socket: socket file descriptor
+ * buffer: a pointer to the message to be sent
+ * length: length of the message to be sent
+ * flags: specifies the type of message transmission
+ * For more details, please refer to linux man page
+ * */
+ssize_t Send(int socket, const void *buffer, size_t length, int flags);
+
+/*
+ * Receive a message from a connected socket - receive a message from a connection-mode or connectionless-mode socket.
+ * socket: socket file descriptor 
+ * buffer: a pointer to a buffer where message is filled
+ * length: length of message to be filled in the buffer
+ * flags: specifies the type of message reception
+ * */
+ssize_t Recv(int socket, void *buffer, size_t length, int flags);
+
+/*
+ * Send a message on a socket - If sendto() is used on a connection-mode (SOCK_STREAM, SOCK_SEQPACKET) socket, the 
+ * arguments dest_addr and addrlen are ignored. Otherwise dest_addr should be filled in once message is transmitted
+ * on connectionless-mode socket
+ * sockfd: socket file descriptor
+ * buf: a pointer to a buffer where message is filled
+ * len: length of message to be filled in the buffer
+ * flags: specifies the type of message transmission
+ * dest_addr: destination address information
+ * addrlen: length of destination address information
+ * */
+ssize_t SendTo(int sockfd, const void *buf, size_t len, int flags, const struct sockaddr *dest_addr, socklen_t addrlen);
+
+/*
+ * Receive a message from a socket - receive a message from a connection-mode or connectionless-mode socket. 
+ * It is normally used with connectionless-mode sockets because it permits the application to retrieve the 
+ * source address of received data.
+ * sockfd: socket file descriptor
+ * buf: a pointer to a buffer where message is filled
+ * len: length of message to be filled in the buffer
+ * flags: specifies the type of message transmission
+ * from: the address information the message is received from
+ * fromlen: size of source address
+ * */
+ssize_t RecvFrom(int sockfd, void *buf, int len, unsigned int flags, struct sockaddr *from, int *fromlen);
+
+/*
+ * Close a file descriptor - deallocate the file descriptor indicated by fd
+ * fd: file descriptor
+ * */
+int Close(int fd);
+
+/*
+ * Shut down socket send and receive operations - it does not actually close the file decriptor and just change
+ * its usability
+ * socket: socket file descriptor whose behavior is going to be changed
+ * how: specifies the type of shutdown. The values are as follows:
+ *      SHUT_RD     Disables further receive operations.
+ *      SHUT_WR     Disables further send operations.
+ *      SHUT_RDWR   Disables further send and receive operations.
+ * For more details, please refer to linux man page
+ * */
+int ShutDown(int socket, int how);
+
+/*
+ * Tell you who is at the other end of a connected stream socket - retreive the peer address of the specified socket;
+ * store the address in the structure pointed to by peer_addr; store the length of this address in the object pointed 
+ * to by the addrlen argument.
+ * sockfd: socket file descriptor
+ * peer_addr: peer address information
+ * addrlen: size of peer address
+ * */
+int GetPeerName(int sockfd, struct sockaddr *peer_addr, int *addrlen);
+
+/*
+ * Get the name of the computer where your program is running
+ * hostname: a pointer to the buffer where host name is filled
+ * size: size of hostname
+ * */
+int GetHostName(char *hostname, size_t size); 
 
 #endif
