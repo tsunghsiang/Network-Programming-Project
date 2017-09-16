@@ -5,6 +5,8 @@
 
 #include "../header/np.h"
 
+namespace NP
+{
 /*
  * DNS lookup / service name lookup :
  * node: the hostname to connect to / IP address
@@ -307,3 +309,4 @@ int GetHostName(char *hostname, size_t size)
         return status;
 }
 
+}

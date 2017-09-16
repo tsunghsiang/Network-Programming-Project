@@ -14,6 +14,9 @@
 #include <netinet/in.h>
 #include <unistd.h>
 
+
+namespace NP
+{
 /*
  * DNS lookup / service name lookup :
  * node: the hostname to connect to / IP address
@@ -160,6 +163,7 @@ int GetPeerName(int sockfd, struct sockaddr *peer_addr, int *addrlen);
  * hostname: a pointer to the buffer where host name is filled
  * size: size of hostname
  * */
-int GetHostName(char *hostname, size_t size); 
+int GetHostName(char *hostname, size_t size);
 
+}
 #endif

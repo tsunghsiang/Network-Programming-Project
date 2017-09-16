@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 	hints.ai_socktype = SOCK_STREAM;
 	
 	// reset address information
-	GetAddrInfo(argv[1], NULL, &hints, &res);
+	NP::GetAddrInfo(argv[1], NULL, &hints, &res);
 
 	printf("IP addresses for %s:\n", argv[1]);
 
@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 	}
 
 	// free address information 
-	FreeAddrInfo(res);
+	NP::FreeAddrInfo(res);
 
 	return 0;
 }
