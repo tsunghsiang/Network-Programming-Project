@@ -13,15 +13,15 @@ namespace NP
  * service: port  number / service name (ex: http, ftp, etc)
  * hints: the address information that you've filled out with relevant information
  * */
- int GetAddrInfo(const char *node, const char *service, const struct addrinfo *hints, struct addrinfo **res)
+int GetAddrInfo(const char *node, const char *service, const struct addrinfo *hints, struct addrinfo **res)
 {
-	int status;
-	if ((status = getaddrinfo(node, service, hints, res)) != 0) 
-	{    
-		fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(status));    
-		exit(EXIT_FAILURE);
-       	}
-	return status;
+    int status;
+    if ((status = getaddrinfo(node, service, hints, res)) != 0) 
+    {    
+	fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(status));    
+	exit(EXIT_FAILURE);	
+    }
+    return status;
 }
 
 /*
@@ -30,7 +30,7 @@ namespace NP
  * */
 void FreeAddrInfo(struct addrinfo *res)
 {
-	freeaddrinfo(res);
+    freeaddrinfo(res);
 }
 
 /*
@@ -43,13 +43,13 @@ void FreeAddrInfo(struct addrinfo *res)
  * */
 int Socket(int domain, int type, int protocol)
 {
-	int fd; // file descriptor
-	if((fd = socket(domain, type, protocol)) == -1)
-	{
-		fprintf(stderr, "socket error");
-		exit(EXIT_FAILURE);
-	}
-	return fd;
+    int fd; // file descriptor
+    if((fd = socket(domain, type, protocol)) == -1)
+    {
+	fprintf(stderr, "socket error: %s, errno: %d\n", gai_strerror(errno), errno);
+	exit(EXIT_FAILURE);
+    }
+    return fd;
 }
 
 /*
@@ -61,13 +61,13 @@ int Socket(int domain, int type, int protocol)
  * */
 int Bind(int sockfd, struct sockaddr *my_addr, int addrlen)
 {
-	int status;
-	if((status = bind(sockfd, my_addr, addrlen) == -1))
-	{
-                fprintf(stderr, "binding error");
-                exit(EXIT_FAILURE);
-	}
-	return status;
+    int status;
+    if((status = bind(sockfd, my_addr, addrlen) == -1))
+    {
+        fprintf(stderr, "binding error: %s, errno: %d\n", gai_strerror(errno), errno);
+        exit(EXIT_FAILURE);
+    }
+    return status;
 }
 
 /*
@@ -78,13 +78,13 @@ int Bind(int sockfd, struct sockaddr *my_addr, int addrlen)
  * */
 int SetSocketOptions(int socket, int level, int option_name, const void *option_value, socklen_t option_len)
 {
-	int status;
-	if((status = setsockopt(socket, level, option_name, option_value, option_len)) == -1)
-	{
-		fprintf(stderr, "socket option error");
-		exit(EXIT_FAILURE);
-	}
-	return status;
+    int status;
+    if((status = setsockopt(socket, level, option_name, option_value, option_len)) == -1)
+    {
+	fprintf(stderr, "socket option error: %s, errno: %d\n", gai_strerror(errno), errno);
+	exit(EXIT_FAILURE);
+    }
+    return status;
 }
 
 /*
@@ -96,13 +96,13 @@ int SetSocketOptions(int socket, int level, int option_name, const void *option_
  * */
 int Connect(int socket, const struct sockaddr *address, socklen_t address_len)
 {
-	int status;
-	if((status = connect(socket, address, address_len)) == -1)
-	{
-		fprintf(stderr, "connection error");
-	  	exit(EXIT_FAILURE); 
-	}
-	return status;
+    int status;
+    if((status = connect(socket, address, address_len)) == -1)
+    {
+	fprintf(stderr, "connection error: %s, errno: %d\n", gai_strerror(errno), errno);
+  	exit(EXIT_FAILURE); 
+    }
+    return status;
 }
 
 /*
@@ -113,13 +113,13 @@ int Connect(int socket, const struct sockaddr *address, socklen_t address_len)
  * */
 int Listen(int sockfd, int backlog)
 {
-	int status;
-	if((status = listen(sockfd, backlog)) == -1)
-	{
-		fprintf(stderr, "listening error");
-		exit(EXIT_FAILURE); 
-	}
-	return status;
+    int status;
+    if((status = listen(sockfd, backlog)) == -1)
+    {
+	fprintf(stderr, "listening error: %s, errno: %d\n", gai_strerror(errno), errno);
+	exit(EXIT_FAILURE); 
+    }
+    return status;
 }
 
 /*
@@ -133,32 +133,33 @@ int Listen(int sockfd, int backlog)
  * */
 int Accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen)
 {
-	int fd;
-	if((fd = accept(sockfd, addr, addrlen)) == -1)
-	{
-		fprintf(stderr, "accept error");
-		exit(EXIT_FAILURE);
-	}
-	return fd;
+    int fd;
+    if((fd = accept(sockfd, addr, addrlen)) == -1)
+    {
+	fprintf(stderr, "accept error: %s, errno: %d\n", gai_strerror(errno), errno);
+	exit(EXIT_FAILURE);
+    }
+    return fd;
 }
 
 /*
- *  * Send a message on a socket - initiate transmission of a message from the specified socket to its peer
- *   * socket: socket file descriptor
- *    * buffer: a pointer to the message to be sent
- *     * length: length of the message to be sent
- *      * flags: specifies the type of message transmission
- *       * For more details, please refer to linux man page
- *        * */
+ * Send a message on a socket - initiate transmission of a message from the 
+ * specified socket to its peer
+ * socket: socket file descriptor
+ * buffer: a pointer to the message to be sent
+ * length: length of the message to be sent
+ * flags: specifies the type of message transmission
+ * For more details, please refer to linux man page
+ * */
 ssize_t Send(int socket, const void *buffer, size_t length, int flags)
 {
-	ssize_t sz;
-	if((sz = send(socket, buffer, length, flags)) < 0)
-	{
-		fprintf(stderr, "send() error");
-		exit(EXIT_FAILURE);
-	}
-	return sz;
+    ssize_t sz;
+    if((sz = send(socket, buffer, length, flags)) < 0)
+    {
+	fprintf(stderr, "send error: %s, errno: %d\n", gai_strerror(errno), errno);
+	exit(EXIT_FAILURE);
+    }
+    return sz;
 }
 
 /*
@@ -170,20 +171,20 @@ ssize_t Send(int socket, const void *buffer, size_t length, int flags)
  * */
 ssize_t Recv(int socket, void *buffer, size_t length, int flags)
 {
-	ssize_t sz;
+    ssize_t sz;
 	
-	sz = recv(socket, buffer, length, flags);
-	if(sz == 0)
-	{
-		fprintf(stderr, "remote host shutdown");
-	}
-	else if(sz < 0)
-	{
-		fprintf(stderr, "recv() error");
-		exit(EXIT_FAILURE);
-	}
+    sz = recv(socket, buffer, length, flags);
+    if(sz == 0)
+    {
+    	fprintf(stderr, "remote host shutdown");
+    }
+    else if(sz < 0)
+    {
+ 	fprintf(stderr, "recv error: %s, errno: %d\n", gai_strerror(errno), errno);
+	exit(EXIT_FAILURE);
+    }
 
-	return sz;
+    return sz;
 }
 
 /*
@@ -199,13 +200,13 @@ ssize_t Recv(int socket, void *buffer, size_t length, int flags)
  * */
 ssize_t SendTo(int sockfd, const void *buf, size_t len, int flags, const struct sockaddr *dest_addr, socklen_t addrlen)
 {
-	ssize_t sz;
-	if((sz = sendto(sockfd, buf, len, flags, dest_addr, addrlen)) < 0)
-	{
-		fprintf(stderr, "sendto() error");
-		exit(EXIT_FAILURE);
-	}
-	return sz;
+    ssize_t sz;
+    if((sz = sendto(sockfd, buf, len, flags, dest_addr, addrlen)) < 0)
+    {
+	fprintf(stderr, "sendto error: %s, errno: %d\n", gai_strerror(errno), errno);
+	exit(EXIT_FAILURE);
+    }
+    return sz;
 }
 
 /*
@@ -219,22 +220,22 @@ ssize_t SendTo(int sockfd, const void *buf, size_t len, int flags, const struct 
  * from: the address information the message is received from
  * fromlen: size of source address
  * */
-ssize_t RecvFrom(int sockfd, void *buf, int len, unsigned int flags, struct sockaddr *from, int *fromlen)
+ssize_t RecvFrom(int sockfd, void *buf, int len, unsigned int flags, struct sockaddr *from, socklen_t *fromlen)
 {
-        ssize_t sz;
+    ssize_t sz;
 
-        sz = recvfrom(sockfd, buf, len, flags, from, fromlen);
-        if(sz == 0)
-        {
-	        fprintf(stderr, "remote host shutdown");
-	}
-	else if(sz < 0)
-	{
-		fprintf(stderr, "recvfrom() error");		
-		exit(EXIT_FAILURE);
-	}
+    sz = recvfrom(sockfd, buf, len, flags, from, fromlen);
+    if(sz == 0)
+    {
+        fprintf(stderr, "remote host shutdown");
+    }
+    else if(sz < 0)
+    {
+	fprintf(stderr, "recvfrom error: %s, errno: %d\n", gai_strerror(errno), errno);		
+	exit(EXIT_FAILURE);
+    }
 
-   	return sz;
+    return sz;
 }
 
 /*
@@ -243,13 +244,13 @@ ssize_t RecvFrom(int sockfd, void *buf, int len, unsigned int flags, struct sock
  * */
 int Close(int fd)
 {
-	int status;
-	if((status = close(fd)) == -1)
-	{
-		fprintf(stderr, "close() error");
-		exit(EXIT_FAILURE);
-	}
-	return status;
+    int status;
+    if((status = close(fd)) == -1)
+    {
+	fprintf(stderr, "close error: %s, errno: %d\n", gai_strerror(errno), errno);
+	exit(EXIT_FAILURE);
+    }
+    return status;
 }
 
 /*
@@ -282,15 +283,15 @@ int ShutDown(int socket, int how)
  * peer_addr: peer address information
  * addrlen: size of peer address
  * */
-int GetPeerName(int sockfd, struct sockaddr *peer_addr, int *addrlen)
+int GetPeerName(int sockfd, struct sockaddr *peer_addr, socklen_t *addrlen)
 {
-        int status;
-        if((status = getpeername(sockfd, peer_addr, addrlen)) == -1)
-        {
-	        fprintf(stderr, "getpeername() error");
-	        exit(EXIT_FAILURE);
-	}
-	return status;
+    int status;
+    if((status = getpeername(sockfd, peer_addr, addrlen)) == -1)
+    {
+        fprintf(stderr, "getpeername error: %s, errno: %d\n", gai_strerror(errno), errno);
+        exit(EXIT_FAILURE);
+    }
+    return status;
 }
 
 /*
@@ -300,13 +301,13 @@ int GetPeerName(int sockfd, struct sockaddr *peer_addr, int *addrlen)
  * */
 int GetHostName(char *hostname, size_t size)
 {
-	int status;
-        if((status = gethostname(hostname, size)) == -1)
-	{
-		fprintf(stderr, "gethostname() error");
-		exit(EXIT_FAILURE);
-	}
-        return status;
+    int status;
+    if((status = gethostname(hostname, size)) == -1)
+    {
+ 	fprintf(stderr, "gethostname error: %s, errno: %d\n", gai_strerror(errno), errno);
+	exit(EXIT_FAILURE);
+    }
+    return status;
 }
 
 }
